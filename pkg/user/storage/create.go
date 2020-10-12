@@ -1,17 +1,15 @@
 package storage
 
 import (
-	"fmt"
-	"github.com/GeorgVartanov/my_site/pkg/user/adding"
+	"github.com/GeorgVartanov/my_site/pkg/user/service/creating"
 	"time"
 )
 
-func (u *UserStorage) Create(user *adding.User) (int64, error) {
+func (u *UserStorage) CreateUserRepository(user *creating.User)  error {
 	var MoscowTime, err = time.LoadLocation("Europe/Moscow")
 	if err != nil {
-		return 0, err
+		return  err
 	}
-
 	newUser := User{
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
@@ -25,19 +23,16 @@ func (u *UserStorage) Create(user *adding.User) (int64, error) {
 	tx := u.DB.PostgresDB.MustBegin()
 
 	// Named queries can use structs, so if you have an existing struct (i.e. person := &Person{}) that you have populated, you can pass it in as &person
-	res, err := tx.NamedExec(`INSERT INTO "myUser" ("firstName", "lastName", "email", "password", "created", "changed", "isAdmin") VALUES (:firstName, :lastName, :email, :password, :created, :changed, :isAdmin)`, &newUser)
+	_, err = tx.NamedExec(`INSERT INTO "myUser" ("firstName", "lastName", "email", "password", "created", "changed", "isAdmin") VALUES (:firstName, :lastName, :email, :password, :created, :changed, :isAdmin) RETURNING id`, &newUser)
 	if err != nil {
-		return 0, err
+		return  err
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		return 0,err
+		return err
 	}
-	id, err :=res.LastInsertId()
-	if err != nil {
-		return 0,err
-	}
-	fmt.Println(id)
-	return id, nil
+
+	//fmt.Println(id)
+	return  nil
 }

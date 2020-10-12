@@ -2,6 +2,10 @@ package main
 
 import (
 	"github.com/GeorgVartanov/my_site/pkg/databases/postgresDB"
+	"github.com/GeorgVartanov/my_site/pkg/user/http/rest"
+	"github.com/GeorgVartanov/my_site/pkg/user/service/creating"
+	"github.com/GeorgVartanov/my_site/pkg/user/service/reading"
+	"github.com/GeorgVartanov/my_site/pkg/user/storage"
 	"github.com/joho/godotenv"
 	"log"
 )
@@ -22,4 +26,9 @@ func main() {
 		}
 
 	}()
+
+	userStorage := storage.NewUserStorage(PDB)
+	userAdding := creating.NewService(userStorage)
+	userReading := reading.NewService(userStorage)
+	rest.Handler(userAdding, userReading)
 }

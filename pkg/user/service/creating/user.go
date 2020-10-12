@@ -1,4 +1,4 @@
-package adding
+package creating
 
 type User struct {
 	//ID        int       `json:"id" db:"id"`
