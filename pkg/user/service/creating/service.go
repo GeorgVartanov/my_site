@@ -1,10 +1,12 @@
 package creating
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"github.com/GeorgVartanov/my_site/pkg/user/storage"
+)
 
 // UserCreatingRepo ...
 type UserCreatingRepository interface {
-	CreateUserRepository(user *User) error
+	CreateUserRepository(user *storage.User) error
 }
 
 type UserCreatingService interface {
@@ -20,13 +22,15 @@ func NewService(r UserCreatingRepository) UserCreatingService {
 }
 
 func (s *service) CreateUserService(user *User) error {
-	cost := bcrypt.DefaultCost
-	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), cost)
+	err:=user.HashPassword()
 	if err != nil {
 		return err
 	}
-	user.Password = string(hash)
-	if err := s.UserCreatingRepository.CreateUserRepository(user); err != nil {
+	userStorage, err := user.ToUserStorageStruct()
+	if err != nil {
+		return err
+	}
+	if err := s.UserCreatingRepository.CreateUserRepository(userStorage); err != nil {
 		return err
 	}
 	return nil

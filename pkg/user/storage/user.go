@@ -1,6 +1,8 @@
 package storage
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	ID        int       `json:"id" db:"id"`
@@ -12,6 +14,10 @@ type User struct {
 	Changed   time.Time `json:"changed" db:"changed"`
 	IsAdmin   bool      `json:"isAdmin" db:"isAdmin"`
 }
+
+
+
+
 
 //CREATE TABLE "myUser" (
 //"id" serial NOT NULL,

@@ -1,4 +1,4 @@
-package storage
+package pgStorage
 
 import "github.com/GeorgVartanov/my_site/pkg/databases/postgresDB"
 
